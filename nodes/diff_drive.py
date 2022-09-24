@@ -8,9 +8,6 @@ from std_msgs.msg import Header, Float32
 from geometry_msgs.msg import Twist
 from sensor_msgs.msg import JointState
 
-from dynamic_reconfigure.server import Server
-from diff_drive_simple.cfg import DiffDriveDynConf
-
 def clamp(val, minval, maxval):
 	if val < minval:
 		return minval
@@ -29,24 +26,13 @@ class DiffDrive:
 		self.SPEED_MIN = rospy.get_param('~min_speed', 0.0)
 		self.SPEED_MAX = rospy.get_param('~max_speed', 1.0)
 
-		# won't ever go faster than this
 		self.max_sub = rospy.Subscriber("diff_drive/max_speed", Float32, self.max_callback)
-
-		# non-zero messages won't go slower than this (to prevent motor stall)
 		self.min_sub = rospy.Subscriber("diff_drive/min_speed", Float32, self.min_callback)
 
 		self.cmdsub = rospy.Subscriber("cmd_vel", Twist, self.velocity)
 		self.wheel_pub = rospy.Publisher("diff_drive", JointState, queue_size=1)
 
-		self.reconfigure_srv = Server(DiffDriveDynConf, dynamic_reconfigure_callback)
-
 		rospy.loginfo("Diff Drive Ready")
-
-	def dynamic_reconfigure_callback(self, config, level):
-		print(config)
-		print(level)
-
-		return config
 
 	def min_callback(self, msg):
 		if msg.data > 0.0 and msg.data <= self.SPEED_MAX:
@@ -77,6 +63,9 @@ class DiffDrive:
 
 
 	def diffdrive(self, x,  y):
+
+			x = clamp(x, -self.SPEED_MAX, self.SPEED_MAX)
+			y = clamp(y, -self.SPEED_MAX, self.SPEED_MAX)
 
 			# First Compute the angle in deg
 			# First hypotenuse

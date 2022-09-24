@@ -5,14 +5,12 @@ find_package(catkin REQUIRED COMPONENTS
 	roscpp
 	rospy
 	sensor_msgs
-	message_generation
 	std_msgs
+	geometry_msgs
 )
 
 catkin_python_setup()
 
-generate_messages(DEPENDENCIES std_msgs)
-
 catkin_package(
-	CATKIN_DEPENDS std_msgs sensor_msgs message_runtime 
+	CATKIN_DEPENDS std_msgs sensor_msgs message_runtime
 )

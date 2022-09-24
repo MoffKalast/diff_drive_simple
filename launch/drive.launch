@@ -1,0 +1,8 @@
+<launch>
+
+	<node name="diff_drive_node" pkg="diff_drive_simple" type="diff_drive.py" output="screen">
+		<param name="min_speed" value="0.0" />
+		<param name="max_speed" value="1.0" />
+	</node>
+
+</launch> 

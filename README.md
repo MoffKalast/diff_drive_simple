@@ -11,12 +11,16 @@ Note that min speed should be less or equal to max speed.
 	<node name="diff_drive_node" pkg="diff_drive_simple" type="diff_drive.py" output="screen">
 		<param name="min_speed" value="0.15" />
 		<param name="max_speed" value="0.45" />
-	<node>
+	</node>
 
 ## Subscribed Topics
 
- - `/cmd_vel` type of Twist, the velocity that needs to be muxed from linear.x and angular.z
+ - `/cmd_vel` (Twist), the velocity that needs to be muxed from linear.x and angular.z
+
+ - `/diff_drive/max_speed` (Float32), wheel velocity will be capped at this value
+
+ - `/diff_drive/min_speed` (Float32), non-zero messages won't go slower than this to prevent motor stall
 
 ## Published Topics
 
-- `/diff_drive` type of JointState, publishes velocity for both wheels/propellers
+- `/diff_drive` (JointState), publishes velocity for both wheels/propellers
