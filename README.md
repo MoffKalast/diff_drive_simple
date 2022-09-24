@@ -2,7 +2,7 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-A simpler alternative to the diff_drive_controller, for diff drive robots where wheel/propeller slip makes it it pointless to bother with that.
+A simpler alternative to the diff_drive_controller, for diff drive robots where wheel/propeller slip makes it it pointless to bother with that. E.g. boats, airboats, tanks, etc.
 
 ## Params
 
