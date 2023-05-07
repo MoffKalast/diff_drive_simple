@@ -56,12 +56,13 @@ class DiffDrive:
 		left_vel = 0.0
 		right_vel = 0.0
 
-		#consistency with diff_drive_controller, which does not reverse correctly
-		#fix the angular inversion in the twist publisher, since it's the only way to make it compatible with both
-		if msg.linear.x < 0:
-			msg.angular.z = -msg.angular.z
-
 		if msg.angular.z != 0 or msg.linear.x != 0:
+
+			#consistency with diff_drive_controller, which does not reverse correctly
+			#fix the angular inversion in the twist publisher, since it's the only way to make it compatible with both
+			if msg.linear.x < 0:
+				msg.angular.z = -msg.angular.z
+
 			left, right = self.diffdrive(msg.angular.z, msg.linear.x)
 
 			left_spd = clamp(abs(left), self.SPEED_MIN, self.SPEED_MAX)
