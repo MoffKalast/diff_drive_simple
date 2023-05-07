@@ -1,18 +1,26 @@
 <package format="2">
 	<name>diff_drive_simple</name>
-	<version>0.1.0</version>
+	<version>0.1.1</version>
 	<description>The most basic diff drive controller you could possibly have.</description>
 
 	<maintainer email="vid.rijavec@gmail.com">MoffKalast</maintainer>
 	<author>MoffKalast</author>
 	<license>MIT</license>
 
+	<depend>rospy</depend>
+    <depend>dynamic_reconfigure</depend>
+
 	<buildtool_depend>catkin</buildtool_depend>
-	<depend>std_msgs</depend>
-	<depend>sensor_msgs</depend>
-	<build_depend>message_generation</build_depend>
-	<build_export_depend>message_runtime</build_export_depend>
-	<exec_depend>message_runtime</exec_depend>
-	<exec_depend>rospy</exec_depend>
+	<build_depend>std_msgs</build_depend>
+    <build_depend>geometry_msgs</build_depend>
+	<build_depend>sensor_msgs</build_depend>
+
+	<build_export_depend>std_msgs</build_export_depend>
+	<build_export_depend>geometry_msgs</build_export_depend>
+	<build_export_depend>sensor_msgs</build_export_depend>
+
+	<exec_depend>std_msgs</exec_depend>
+	<exec_depend>geometry_msgs</exec_depend>
+	<exec_depend>sensor_msgs</exec_depend>
 
 </package>

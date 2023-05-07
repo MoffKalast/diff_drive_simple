@@ -8,6 +8,9 @@ from std_msgs.msg import Header, Float32
 from geometry_msgs.msg import Twist
 from sensor_msgs.msg import JointState
 
+from dynamic_reconfigure.server import Server as DynamicReconfigureServer
+from diff_drive_simple.cfg import DiffDriveSimpleConfig
+
 def clamp(val, minval, maxval):
 	if val < minval:
 		return minval
@@ -26,21 +29,27 @@ class DiffDrive:
 		self.SPEED_MIN = rospy.get_param('~min_speed', 0.0)
 		self.SPEED_MAX = rospy.get_param('~max_speed', 1.0)
 
-		self.max_sub = rospy.Subscriber("diff_drive/max_speed", Float32, self.max_callback)
-		self.min_sub = rospy.Subscriber("diff_drive/min_speed", Float32, self.min_callback)
-
 		self.cmdsub = rospy.Subscriber("cmd_vel", Twist, self.velocity)
 		self.wheel_pub = rospy.Publisher("diff_drive", JointState, queue_size=1)
 
+		self.reconfigure_server = DynamicReconfigureServer(DiffDriveSimpleConfig, self.dynamic_reconfigure_callback)
+
 		rospy.loginfo("Diff Drive Ready")
 
-	def min_callback(self, msg):
-		if msg.data > 0.0 and msg.data <= self.SPEED_MAX:
-			self.SPEED_MIN = msg.data
+	def dynamic_reconfigure_callback(self, config, level):
 
-	def max_callback(self, msg):
-		if msg.data >= self.SPEED_MIN:
-			self.SPEED_MAX = msg.data
+		if config.min_speed > 0.0 and config.min_speed <= self.SPEED_MAX:
+			self.SPEED_MIN = config.min_speed
+
+		if config.max_speed >= self.SPEED_MIN:
+			self.SPEED_MAX = config.max_speed
+
+		config.min_speed = self.SPEED_MIN
+		config.max_speed = self.SPEED_MAX
+
+		rospy.loginfo("Diff Drive reconfigured: Min: {} Max: {}".format(self.SPEED_MIN, self.SPEED_MAX))
+
+		return config
 
 	def velocity(self, msg):
 
@@ -101,8 +110,5 @@ class DiffDrive:
 
 			return [rawRight, rawLeft]
 
-try:
-	drive = DiffDrive()
-	rospy.spin()
-except Exception as e:
-	print(e)
+drive = DiffDrive()
+rospy.spin()

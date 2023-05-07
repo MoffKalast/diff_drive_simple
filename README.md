@@ -17,10 +17,13 @@ Note that min speed should be less or equal to max speed.
 
  - `/cmd_vel` (Twist), the velocity that needs to be muxed from linear.x and angular.z
 
- - `/diff_drive/max_speed` (Float32), wheel velocity will be capped at this value
-
- - `/diff_drive/min_speed` (Float32), non-zero messages won't go slower than this to prevent motor stall
-
 ## Published Topics
 
 - `/diff_drive` (JointState), publishes velocity for both wheels/propellers
+
+
+## Dynamic Reconfigure Config
+
+ - `max_speed` (double_t), wheel velocity will be capped at this value
+
+ - `min_speed` (double_t), non-zero messages won't go slower than this to prevent motor stall
