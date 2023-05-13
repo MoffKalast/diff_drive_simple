@@ -7,11 +7,12 @@ A simpler alternative to the diff_drive_controller, for diff drive robots where 
 ## Params
 
 Note that min speed should be less or equal to max speed.
-
-	<node name="diff_drive_node" pkg="diff_drive_simple" type="diff_drive.py" output="screen">
-		<param name="min_speed" value="0.15" />
-		<param name="max_speed" value="0.45" />
-	</node>
+```xml
+<node name="diff_drive_node" pkg="diff_drive_simple" type="diff_drive.py" output="screen">
+	<param name="min_speed" value="0.15" />
+	<param name="max_speed" value="0.45" />
+</node>
+```
 
 ## Subscribed Topics
 
