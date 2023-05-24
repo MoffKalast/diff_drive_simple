@@ -7,6 +7,7 @@ find_package(catkin REQUIRED COMPONENTS
 	sensor_msgs
 	std_msgs
 	geometry_msgs
+    message_generation
 )
 
 generate_dynamic_reconfigure_options(
@@ -28,8 +29,4 @@ include_directories(
 install(PROGRAMS
     src/diff_drive.py
     DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
-)
-
-install(DIRECTORY config
-    DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
 )
