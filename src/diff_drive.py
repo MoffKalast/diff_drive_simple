@@ -1,10 +1,7 @@
 #!/usr/bin/env python3
 import rospy
-import time
 import math
-import sys
 
-from std_msgs.msg import Header, Float32
 from geometry_msgs.msg import Twist
 from sensor_msgs.msg import JointState
 
