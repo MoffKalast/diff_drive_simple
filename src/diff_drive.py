@@ -1,10 +1,7 @@
 #!/usr/bin/env python3
 import rospy
-import time
 import math
-import sys
 
-from std_msgs.msg import Header, Float32
 from geometry_msgs.msg import Twist
 from sensor_msgs.msg import JointState
 
@@ -53,6 +50,10 @@ class DiffDrive:
 
 	def velocity(self, msg):
 
+		if math.isnan(msg.angular.z) or math.isnan(msg.linear.x):
+			rospy.logfatal("Warning: NaN value detected in velocity: angular.z=%s, linear.x=%s", msg.angular.z, msg.linear.x)
+			return
+
 		left_vel = 0.0
 		right_vel = 0.0
 
@@ -64,6 +65,10 @@ class DiffDrive:
 				msg.angular.z = -msg.angular.z
 
 			left, right = self.diffdrive(msg.angular.z, msg.linear.x)
+
+			if math.isnan(left) or math.isnan(right):
+				rospy.logfatal("Warning: NaN value detected in diff_drive: left=%s, right=%s", left, right)
+				return
 
 			left_spd = clamp(abs(left), self.SPEED_MIN, self.SPEED_MAX)
 			right_spd = clamp(abs(right), self.SPEED_MIN, self.SPEED_MAX)
@@ -87,7 +92,10 @@ class DiffDrive:
 			z = math.sqrt(x * x + y * y)
 
 			# angle in radians
-			rad = math.acos(math.fabs(x) / z)
+			if z == 0:
+				rad = 0
+			else:
+				rad = math.acos(math.fabs(x) / z)
 
 			# and in degrees
 			angle = rad * 180 / math.pi
