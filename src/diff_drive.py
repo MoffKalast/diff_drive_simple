@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 import rospy
 import math
+import time
 
 from geometry_msgs.msg import Twist
-from sensor_msgs.msg import JointState
+from sensor_msgs.msg import JointState, Range
 
 from dynamic_reconfigure.server import Server as DynamicReconfigureServer
 from diff_drive_simple.cfg import DiffDriveSimpleConfig
@@ -27,11 +28,19 @@ class DiffDrive:
 		self.SPEED_MAX = rospy.get_param('~max_speed', 1.0)
 
 		self.cmdsub = rospy.Subscriber("cmd_vel", Twist, self.velocity)
+		self.sonarsub = rospy.Subscriber("sonar", Range, self.sonar)
+
+		self.sonar_time = time.time()
+
 		self.wheel_pub = rospy.Publisher("diff_drive", JointState, queue_size=1)
 
 		self.reconfigure_server = DynamicReconfigureServer(DiffDriveSimpleConfig, self.dynamic_reconfigure_callback)
 
 		rospy.loginfo("Diff Drive Ready")
+
+	def sonar(self, msg):
+		self.sonar_stop = msg.range < msg.max_range
+		self.sonar_time = time.time()
 
 	def dynamic_reconfigure_callback(self, config, level):
 
@@ -75,6 +84,12 @@ class DiffDrive:
 
 			left_vel = math.copysign(left_spd, left)
 			right_vel = math.copysign(right_spd, right)
+
+			if rospy.get_time() - self.sonar_time < 1.0:
+				if left_vel > 0:
+					left_vel = -left_vel
+				if right_vel > 0:
+					right_vel = -right_vel
 
 		state = JointState()
 		state.name = ["left_wheel", "right_wheel"]
